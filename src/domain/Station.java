@@ -1,24 +1,14 @@
 package domain;
 
 public class Station {
-    private int id;
     private String city;
 
-    public Station(int id, String city) {
-        this.id = id;
+    public Station(String city) {
         this.city = city;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getCity() {
         return city;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setCity(String city) {
@@ -27,6 +17,6 @@ public class Station {
 
     @Override
     public String toString() {
-        return String.format("Station{id=%d, city='%s'}", id, city);
+        return String.format("Station '%s'", city);
     }
 }

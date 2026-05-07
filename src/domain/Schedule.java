@@ -50,7 +50,7 @@ public class Schedule {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("Schedule{train=%s, route=%s, stationTimesArrival={", train.getId(), route.getId()));
+        sb.append(String.format("Schedule{train=%s, route=%s, stationTimesArrival={", train.getId(), route.toString()));
         for (Map.Entry<Station, DateTime> entry : stationTimesArrival.entrySet()) {
             sb.append(String.format("%s: %s, ", entry.getKey().getCity(), entry.getValue().toString()));
         }
