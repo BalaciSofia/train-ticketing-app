@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Ticketing — Login</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+
+<div class="card">
+    <div class="logo">
+        <h1>Train Ticketing</h1>
+        <p class="subtitle">Log in to continue</p>
+    </div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="field">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username" autocomplete="username" required>
+        </div>
+        <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" id="submitBtn">Log in</button>
+        <div class="error" id="errorMsg">Invalid username or password.</div>
+    </form>
+</div>
+
+<script src="/js/login.js"></script>
+</body>
+</html>

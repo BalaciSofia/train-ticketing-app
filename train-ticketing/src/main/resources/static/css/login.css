@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #f5f0e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Georgia', serif;
+}
+
+.card {
+    background-color: #fffdf8;
+    border: 1px solid #d4b896;
+    border-radius: 4px;
+    padding: 48px 40px;
+    width: 360px;
+    box-shadow: 0 2px 12px rgba(101, 67, 33, 0.08);
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+h1 {
+    font-size: 1.25rem;
+    font-weight: normal;
+    color: #3b2410;
+    text-align: center;
+    margin-top: 10px;
+    letter-spacing: 0.03em;
+}
+
+.subtitle {
+    text-align: center;
+    color: #9e7b5a;
+    font-size: 0.82rem;
+    margin-top: 4px;
+    margin-bottom: 32px;
+    font-family: Arial, sans-serif;
+}
+
+label {
+    display: block;
+    font-size: 0.78rem;
+    color: #7a4f2d;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: Arial, sans-serif;
+    margin-bottom: 6px;
+}
+
+input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d4b896;
+    border-radius: 3px;
+    background-color: #faf6ef;
+    color: #3b2410;
+    font-size: 0.95rem;
+    font-family: Arial, sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: #7a4f2d;
+    background-color: #fffdf8;
+}
+
+.field {
+    margin-bottom: 20px;
+}
+
+button {
+    width: 100%;
+    padding: 11px;
+    background-color: #7a4f2d;
+    color: #faf6ef;
+    border: none;
+    border-radius: 3px;
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #5e3a1e;
+}
+
+button:disabled {
+    background-color: #c4a882;
+    cursor: not-allowed;
+}
+
+.error {
+    display: none;
+    background-color: #fdf0e8;
+    border: 1px solid #e8a87c;
+    color: #7a3010;
+    font-size: 0.82rem;
+    font-family: Arial, sans-serif;
+    padding: 9px 12px;
+    border-radius: 3px;
+    margin-top: 16px;
+    text-align: center;
+}
