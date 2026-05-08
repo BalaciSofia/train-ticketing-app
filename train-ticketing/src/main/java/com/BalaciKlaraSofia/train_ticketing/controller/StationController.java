@@ -32,4 +32,19 @@ public class StationController {
         stations.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Station> getById(@PathVariable Integer id) {
+        return stations.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/city/{city}")
+    public ResponseEntity<Station> getByCity(@PathVariable String city) {
+        return stations.findByCity(city)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }

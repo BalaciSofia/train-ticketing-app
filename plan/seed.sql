@@ -87,3 +87,15 @@ INSERT INTO tickets (id, booking_id, departure_schedule_stop_id, arrival_schedul
 
 INSERT INTO delays (id, schedule_id, delay_minutes) VALUES
 (1, 1, 20);
+
+-- ── RESET SEQUENCES TO MAX ID ────────────────────────────────
+SELECT setval(pg_get_serial_sequence('stations',       'id'), (SELECT MAX(id) FROM stations));
+SELECT setval(pg_get_serial_sequence('routes',         'id'), (SELECT MAX(id) FROM routes));
+SELECT setval(pg_get_serial_sequence('route_stops',    'id'), (SELECT MAX(id) FROM route_stops));
+SELECT setval(pg_get_serial_sequence('trains',         'id'), (SELECT MAX(id) FROM trains));
+SELECT setval(pg_get_serial_sequence('schedules',      'id'), (SELECT MAX(id) FROM schedules));
+SELECT setval(pg_get_serial_sequence('schedule_stops', 'id'), (SELECT MAX(id) FROM schedule_stops));
+SELECT setval(pg_get_serial_sequence('users',          'id'), (SELECT MAX(id) FROM users));
+SELECT setval(pg_get_serial_sequence('bookings',       'id'), (SELECT MAX(id) FROM bookings));
+SELECT setval(pg_get_serial_sequence('tickets',        'id'), (SELECT MAX(id) FROM tickets));
+SELECT setval(pg_get_serial_sequence('delays',         'id'), (SELECT MAX(id) FROM delays));
