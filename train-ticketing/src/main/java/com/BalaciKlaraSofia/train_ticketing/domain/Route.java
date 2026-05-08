@@ -3,22 +3,23 @@ package com.BalaciKlaraSofia.train_ticketing.domain;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "stations")
-public class Station {
+@Table(name = "routes")
+public class Route {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, unique = true)
-    private String city;
+    private String name;
 
-    protected Station() {}
+    protected Route() {}
 
-    public Station(String city) {
-        this.city = city;
+    public Route(String name) {
+        this.name = name;
     }
 
     public Integer getId() { return id; }
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 }
