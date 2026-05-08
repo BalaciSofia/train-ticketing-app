@@ -24,6 +24,7 @@ public class Train {
     }
 
     public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
     public String getTrainNumber() { return trainNumber; }
     public Integer getNumberOfSeats() { return numberOfSeats; }
 

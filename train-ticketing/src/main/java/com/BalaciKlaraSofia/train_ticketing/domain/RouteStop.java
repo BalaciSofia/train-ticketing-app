@@ -28,6 +28,7 @@ public class RouteStop {
     }
 
     public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
     public Integer getRouteId() { return routeId; }
     public Integer getStationId() { return stationId; }
     public Integer getStopNumber() { return stopNumber; }

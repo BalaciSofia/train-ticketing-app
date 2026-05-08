@@ -33,6 +33,7 @@ public class ScheduleStop {
     }
 
     public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
     public Integer getScheduleId() { return scheduleId; }
     public Integer getRouteStopId() { return routeStopId; }
     public LocalDateTime getArrivalTime() { return arrivalTime; }

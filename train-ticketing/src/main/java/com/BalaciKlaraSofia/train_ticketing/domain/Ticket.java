@@ -28,6 +28,7 @@ public class Ticket {
     }
 
     public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
     public Integer getBookingId() { return bookingId; }
     public Integer getDepartureScheduleStopId() { return departureScheduleStopId; }
     public Integer getArrivalScheduleStopId() { return arrivalScheduleStopId; }

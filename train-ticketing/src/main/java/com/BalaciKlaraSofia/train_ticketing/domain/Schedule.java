@@ -24,6 +24,7 @@ public class Schedule {
     }
 
     public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
     public Integer getRouteId() { return routeId; }
     public Integer getTrainId() { return trainId; }
 

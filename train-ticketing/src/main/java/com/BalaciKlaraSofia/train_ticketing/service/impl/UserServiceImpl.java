@@ -1,8 +1,10 @@
 package com.BalaciKlaraSofia.train_ticketing.service.impl;
 
 import com.BalaciKlaraSofia.train_ticketing.domain.User;
+import com.BalaciKlaraSofia.train_ticketing.dto.LoginRequest;
 import com.BalaciKlaraSofia.train_ticketing.repository.UserRepository;
 import com.BalaciKlaraSofia.train_ticketing.service.UserService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -40,5 +43,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Integer id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<User> login(LoginRequest request) {
+        return userRepository.findByUsername(request.getUsername())
+                .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPasswordHash()));
     }
 }
