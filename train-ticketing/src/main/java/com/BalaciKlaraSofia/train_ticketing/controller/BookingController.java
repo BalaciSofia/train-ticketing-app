@@ -1,6 +1,7 @@
 package com.BalaciKlaraSofia.train_ticketing.controller;
 
 import com.BalaciKlaraSofia.train_ticketing.domain.Booking;
+import com.BalaciKlaraSofia.train_ticketing.dto.BookingRequest;
 import com.BalaciKlaraSofia.train_ticketing.service.BookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,15 @@ public class BookingController {
     }
 
     @PostMapping
-    public Booking add(@RequestBody Booking booking) {
-        return bookingService.add(booking);
+    public ResponseEntity<?> book(@RequestBody BookingRequest request) {
+        try {
+            Booking booking = bookingService.book(request);
+            return ResponseEntity.ok(booking);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")

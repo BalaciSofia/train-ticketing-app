@@ -11,4 +11,10 @@ public interface TicketService {
     Ticket add(Ticket ticket);
     Ticket update(Ticket ticket);
     void delete(Integer id);
+    long countOverlappingTickets(Integer scheduleId, Integer departureStopNumber, Integer arrivalStopNumber);
+
+    List<Ticket> findByScheduleId(Integer scheduleId);
+    List<Ticket> findByTrainId(Integer trainId);
+    List<Ticket> findAffectedByDelay(Integer scheduleId, Integer fromStopNumber);
+
 }
