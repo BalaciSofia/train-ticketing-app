@@ -41,8 +41,13 @@ public class TicketServiceImpl implements TicketService {
     public void delete(Integer id) {
         ticketRepository.deleteById(id);
     }
+
     @Override
     public long countOverlappingTickets(Integer scheduleId, Integer departureStopNumber, Integer arrivalStopNumber) {
         return ticketRepository.countOverlappingTickets(scheduleId, departureStopNumber, arrivalStopNumber);
+    }
+    @Override
+    public List<Ticket> findAffectedByDelay(Integer scheduleId, Integer fromStopNumber) {
+        return ticketRepository.findAffectedByDelay(scheduleId, fromStopNumber);
     }
 }

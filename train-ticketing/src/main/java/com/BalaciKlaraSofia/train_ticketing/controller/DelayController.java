@@ -1,6 +1,7 @@
 package com.BalaciKlaraSofia.train_ticketing.controller;
 
 import com.BalaciKlaraSofia.train_ticketing.domain.Delay;
+import com.BalaciKlaraSofia.train_ticketing.dto.DelayRequest;
 import com.BalaciKlaraSofia.train_ticketing.service.DelayService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,12 @@ public class DelayController {
     }
 
     @PostMapping
-    public Delay add(@RequestBody Delay delay) {
-        return delayService.add(delay);
+    public ResponseEntity<?> report(@RequestBody DelayRequest request) {
+        try {
+            return ResponseEntity.ok(delayService.report(request));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
