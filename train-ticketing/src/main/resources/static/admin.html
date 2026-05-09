@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Ticketing — Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<header>
+    <h1>Train Ticketing — Admin</h1>
+    <span id="adminName"></span>
+</header>
+
+<div class="grid">
+
+    <div class="panel">
+        <div class="panel-header"><h2>Stations</h2></div>
+        <div class="panel-body">
+            <div class="table-wrap">
+                <table id="stationsTable">
+                    <thead>
+                        <tr><th>City</th><th></th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="add-form">
+                <input type="text" id="newCity" placeholder="City name">
+                <button class="btn btn-primary" onclick="addStation()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header"><h2>Trains</h2></div>
+        <div class="panel-body">
+            <div class="table-wrap">
+                <table id="trainsTable">
+                    <thead>
+                        <tr><th>Number</th><th>Seats</th><th></th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="add-form">
+                <input type="text" id="newTrainNumber" placeholder="Train number">
+                <input type="number" id="newSeats" placeholder="Seats" style="max-width:80px">
+                <button class="btn btn-primary" onclick="addTrain()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-wide">
+        <div class="panel-header"><h2>Routes</h2></div>
+        <div class="panel-body">
+
+            <div class="table-wrap">
+                <table id="routesTable">
+                    <thead>
+                        <tr><th>Name</th><th>Stops</th><th></th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div id="stopsSection" class="stops-section" style="display:none">
+                <div class="stops-section-header">
+                    <span id="stopsTitle"></span>
+                    <button class="btn btn-sm" onclick="closeStopsSection()">✕</button>
+                </div>
+                <div id="stopsList" class="stops-list"></div>
+                <div class="add-form">
+                    <select id="newStopStation">
+                        <option value="">Select station to append</option>
+                    </select>
+                    <button class="btn btn-sm btn-primary" onclick="addStopToRoute()">Add Stop</button>
+                </div>
+            </div>
+
+            <div class="route-add-section">
+                <div class="add-form">
+                    <input type="text" id="newRouteName" placeholder="Route name" style="flex:0 0 220px">
+                </div>
+                <div id="stopBuilder" class="stop-builder"></div>
+                <div class="add-form">
+                    <button class="btn btn-sm btn-edit" onclick="addStopRow()">+ Stop</button>
+                    <button class="btn btn-primary" onclick="addRoute()">Add Route</button>
+                </div>
+                <div class="msg" id="routeMsg"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="panel panel-wide">
+        <div class="panel-header"><h2>Schedules</h2></div>
+        <div class="panel-body">
+
+            <div class="table-wrap">
+                <table id="schedulesTable">
+                    <thead>
+                        <tr><th>Train</th><th>Route</th><th>Stops</th><th></th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div id="scheduleStopsSection" class="stops-section" style="display:none">
+                <div class="stops-section-header">
+                    <span id="scheduleStopsTitle"></span>
+                    <button class="btn btn-sm" onclick="closeScheduleStopsSection()">✕</button>
+                </div>
+                <div id="scheduleStopsList" class="stops-list"></div>
+            </div>
+
+            <div class="route-add-section">
+                <div class="add-form">
+                    <select id="newScheduleTrain" style="flex:1" onchange="buildScheduleStopBuilder()">
+                        <option value="">Select train</option>
+                    </select>
+                    <select id="newScheduleRoute" style="flex:2" onchange="buildScheduleStopBuilder()">
+                        <option value="">Select route</option>
+                    </select>
+                </div>
+                <div id="scheduleStopBuilder" class="stop-builder"></div>
+                <div class="add-form">
+                    <button class="btn btn-primary" onclick="addSchedule()">Add Schedule</button>
+                </div>
+                <div class="msg" id="scheduleMsg"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header"><h2>Bookings</h2></div>
+        <div class="panel-body">
+            <div class="filter-row">
+                <label>Filter by train:</label>
+                <select id="trainFilter" onchange="loadBookings()">
+                    <option value="">All trains</option>
+                </select>
+            </div>
+            <div class="table-wrap">
+                <table id="bookingsTable">
+                    <thead>
+                        <tr><th>User</th><th>From</th><th>To</th><th>Departure</th><th>Train</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header"><h2>Delays</h2></div>
+        <div class="panel-body">
+            <div class="table-wrap">
+                <table id="delaysTable">
+                    <thead>
+                        <tr><th>Train</th><th>Route</th><th>From Stop</th><th>Delay</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="add-form" style="flex-wrap:wrap;gap:6px">
+                <select id="delaySchedule" style="flex:2;min-width:160px" onchange="loadStopsForSchedule()">
+                    <option value="">Select schedule</option>
+                </select>
+                <select id="delayFromStop" style="flex:2;min-width:160px" disabled>
+                    <option value="">Select delay start stop</option>
+                </select>
+                <input type="number" id="delayMinutes" placeholder="Minutes" style="max-width:90px">
+                <button class="btn btn-primary" onclick="reportDelay()">Report</button>
+            </div>
+            <div class="msg" id="delayMsg"></div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Ticketing</title>
+    <link rel="stylesheet" href="/css/user.css">
+</head>
+<body>
+
+<header>
+    <h1>Train Ticketing</h1>
+    <div class="header-right">
+        <span id="userName"></span>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<main>
+
+    <div class="panel">
+        <div class="panel-header"><h2>Search Trips</h2></div>
+        <div class="panel-body">
+            <div class="search-row">
+                <div class="search-field">
+                    <label>From</label>
+                    <select id="fromStation">
+                        <option value="">Select departure station</option>
+                    </select>
+                </div>
+                <div class="search-field">
+                    <label>To</label>
+                    <select id="toStation">
+                        <option value="">Select arrival station</option>
+                    </select>
+                </div>
+                <div class="search-field search-field-date">
+                    <label>Date</label>
+                    <input type="date" id="travelDate">
+                </div>
+                <button class="btn btn-primary search-btn" onclick="search()">Search</button>
+            </div>
+            <div class="msg" id="searchMsg"></div>
+        </div>
+    </div>
+
+    <div class="panel" id="resultsPanel" style="display:none">
+        <div class="panel-header"><h2>Available Trips</h2></div>
+        <div class="panel-body" id="resultsBody">
+        </div>
+    </div>
+
+    <div class="panel cart-panel" id="cartPanel" style="display:none">
+        <div class="panel-header">
+            <h2>Selected Trips <span class="cart-count" id="cartCount">0</span></h2>
+        </div>
+        <div class="panel-body">
+            <div class="table-wrap">
+                <table id="cartTable">
+                    <thead>
+                        <tr><th>Train</th><th>From</th><th>Departure</th><th>To</th><th>Arrival</th><th>Note</th><th></th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="cart-footer">
+                <button class="btn btn-danger-outline" onclick="clearCart()">Clear all</button>
+                <button class="btn btn-primary" onclick="bookAll()">Book All</button>
+            </div>
+            <div class="msg" id="bookMsg"></div>
+        </div>
+    </div>
+
+</main>
+
+<script src="/js/user.js"></script>
+</body>
+</html>
