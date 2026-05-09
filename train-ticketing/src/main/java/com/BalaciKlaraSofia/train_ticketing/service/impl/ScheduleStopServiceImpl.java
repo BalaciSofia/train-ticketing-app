@@ -41,4 +41,14 @@ public class ScheduleStopServiceImpl implements ScheduleStopService {
     public void delete(Integer id) {
         scheduleStopRepository.deleteById(id);
     }
+
+    @Override
+    public List<ScheduleStop> findByStationId(Integer stationId) {
+        return scheduleStopRepository.findByStationId(stationId);
+    }
+
+    @Override
+    public List<ScheduleStop> findLaterStopsOnSchedule(Integer scheduleId, Integer stopNumber) {
+        return scheduleStopRepository.findLaterStopsOnSchedule(scheduleId, stopNumber);
+    }
 }

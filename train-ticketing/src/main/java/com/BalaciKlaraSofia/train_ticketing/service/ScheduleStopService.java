@@ -11,4 +11,8 @@ public interface ScheduleStopService {
     ScheduleStop add(ScheduleStop scheduleStop);
     ScheduleStop update(ScheduleStop scheduleStop);
     void delete(Integer id);
+    List<ScheduleStop> findByStationId(Integer stationId);
+    List<ScheduleStop> findLaterStopsOnSchedule(Integer scheduleId, Integer stopNumber);
+
+    List<ScheduleStop> findByScheduleId(Integer scheduleId);
 }
