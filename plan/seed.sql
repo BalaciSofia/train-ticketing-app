@@ -1,8 +1,3 @@
--- ============================================================
--- SEED DATA  –  Train Ticketing Application
--- ============================================================
-
--- ── DELETE ───────────────────────────────────────────────────
 DELETE FROM delays;
 DELETE FROM tickets;
 DELETE FROM bookings;
@@ -14,7 +9,6 @@ DELETE FROM route_stops;
 DELETE FROM routes;
 DELETE FROM stations;
 
--- ── RESET SEQUENCES ──────────────────────────────────────────
 SELECT setval(pg_get_serial_sequence('stations',       'id'), 1, false);
 SELECT setval(pg_get_serial_sequence('routes',         'id'), 1, false);
 SELECT setval(pg_get_serial_sequence('route_stops',    'id'), 1, false);
@@ -26,7 +20,6 @@ SELECT setval(pg_get_serial_sequence('bookings',       'id'), 1, false);
 SELECT setval(pg_get_serial_sequence('tickets',        'id'), 1, false);
 SELECT setval(pg_get_serial_sequence('delays',         'id'), 1, false);
 
--- ── INSERT ───────────────────────────────────────────────────
 INSERT INTO stations (id, city) VALUES
 (1, 'Bucuresti Nord'),
 (2, 'Ploiesti Sud'),
@@ -51,12 +44,14 @@ INSERT INTO route_stops (id, route_id, station_id, stop_number) VALUES
 INSERT INTO trains (id, train_number, number_of_seats) VALUES
 (1, 'IR 1581', 200),
 (2, 'IR 1582', 180),
-(3, 'IC 521',  300);
+(3, 'IC 521',  300),
+(4, 'IR 9999',   2);
 
 INSERT INTO schedules (id, route_id, train_id) VALUES
 (1, 1, 1),
 (2, 1, 2),
-(3, 2, 3);
+(3, 2, 3),
+(4, 1, 4);
 
 INSERT INTO schedule_stops (id, schedule_id, route_stop_id, arrival_time, departure_time) VALUES
 (1,  1, 1, '2026-05-15 08:00:00', '2026-05-15 08:00:00'),
@@ -69,26 +64,33 @@ INSERT INTO schedule_stops (id, schedule_id, route_stop_id, arrival_time, depart
 (8,  2, 4, '2026-05-15 19:30:00', '2026-05-15 19:30:00'),
 (9,  3, 5, '2026-05-15 12:00:00', '2026-05-15 12:00:00'),
 (10, 3, 6, '2026-05-15 14:30:00', '2026-05-15 14:35:00'),
-(11, 3, 7, '2026-05-15 17:00:00', '2026-05-15 17:00:00');
+(11, 3, 7, '2026-05-15 17:00:00', '2026-05-15 17:00:00'),
+(12, 4, 1, '2026-05-16 08:00:00', '2026-05-16 08:00:00'),
+(13, 4, 2, '2026-05-16 09:00:00', '2026-05-16 09:05:00'),
+(14, 4, 3, '2026-05-16 10:15:00', '2026-05-16 10:20:00'),
+(15, 4, 4, '2026-05-16 11:30:00', '2026-05-16 11:30:00');
 
 INSERT INTO users (id, username, email, password_hash, role) VALUES
-(1, 'admin',         'admin@trains.com',         '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh32', 'ADMIN'),
-(2, 'ion.popescu',   'ion.popescu@email.com',     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh32', 'CLIENT'),
-(3, 'maria.ionescu', 'maria.ionescu@email.com',   '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh32', 'CLIENT');
+(1, 'admin',              'trainTicketingApp@gmail.com',      '$2b$10$2Z8SG9hhNbvPLcA.FeyPl.gQveQ5/FNnJc1QzZxjaZ/pAZQpZMl2.', 'ADMIN'),
+(2, 'sofia.balaci',       'sofiabalaci02@gmail.com',          '$2b$10$2Z8SG9hhNbvPLcA.FeyPl.gQveQ5/FNnJc1QzZxjaZ/pAZQpZMl2.', 'CLIENT'),
+(3, 'cristian.alexutan',  'cristianalexutan2005@gmail.com',   '$2b$10$2Z8SG9hhNbvPLcA.FeyPl.gQveQ5/FNnJc1QzZxjaZ/pAZQpZMl2.', 'CLIENT');
 
 INSERT INTO bookings (id, user_id) VALUES
 (1, 2),
-(2, 3);
+(2, 3),
+(3, 2),
+(4, 3);
 
 INSERT INTO tickets (id, booking_id, departure_schedule_stop_id, arrival_schedule_stop_id) VALUES
 (1, 1, 1, 4),
 (2, 1, 1, 4),
-(3, 2, 1, 3);
+(3, 2, 1, 3),
+(4, 3, 12, 15),
+(5, 4, 12, 15);
 
-INSERT INTO delays (id, schedule_id, delay_minutes) VALUES
-(1, 1, 20);
+INSERT INTO delays (id, schedule_id, from_schedule_stop_id, delay_minutes) VALUES
+(1, 1, 2, 20);
 
--- ── RESET SEQUENCES TO MAX ID ────────────────────────────────
 SELECT setval(pg_get_serial_sequence('stations',       'id'), (SELECT MAX(id) FROM stations));
 SELECT setval(pg_get_serial_sequence('routes',         'id'), (SELECT MAX(id) FROM routes));
 SELECT setval(pg_get_serial_sequence('route_stops',    'id'), (SELECT MAX(id) FROM route_stops));
