@@ -1,5 +1,6 @@
 package com.BalaciKlaraSofia.train_ticketing.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -19,9 +20,11 @@ public class ScheduleStop {
     @JoinColumn(name = "route_stop_id", nullable = false)
     private RouteStop routeStop;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(nullable = false)
     private LocalDateTime arrivalTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(nullable = false)
     private LocalDateTime departureTime;
 
