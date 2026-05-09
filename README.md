@@ -8,10 +8,10 @@ A Spring Boot REST application for managing train schedules, bookings, and delay
 
 - Java 25 / Spring Boot 4.0.6
 - Spring Data JPA (Hibernate) with PostgreSQL
-- Spring Security Crypto — BCrypt password hashing
-- Spring Boot Mail — SMTP email via JavaMailSender
-- springdoc-openapi — Swagger UI auto-generated at `/swagger-ui.html`
-- JUnit 5 + Mockito — unit tests
+- Spring Security Crypto - BCrypt password hashing
+- Spring Boot Mail - SMTP email via JavaMailSender
+- springdoc-openapi - Swagger UI auto-generated at `/swagger-ui.html`
+- JUnit 5 + Mockito - unit tests
 
 ---
 
@@ -21,18 +21,18 @@ The full schema, seed data, and sequence resets are in [`plan/seed.sql`](plan/se
 
 The domain consists of ten tables:
 
-- **stations** — physical stops; each has a city name
-- **routes** — named sequences of stations (e.g. Bucuresti – Brasov)
-- **route_stops** — junction between a route and a station, with a `stop_number` defining the travel order
-- **trains** — physical assets with a seat capacity and a service number (e.g. IR 1581)
-- **schedules** — bind a train to a route for a specific run
-- **schedule_stops** — the timetable entry for one stop within a schedule, storing both arrival and departure timestamps independently to model dwell time
-- **users** — application accounts; passwords stored exclusively as BCrypt hashes
-- **bookings** — groups one or more tickets under one transaction for a single user
-- **tickets** — one seat on one schedule between two `schedule_stops` (departure and arrival)
-- **delays** — a reported delay on a schedule starting from a given stop, used to drive email notifications
+- **stations** - physical stops; each has a city name
+- **routes** - named sequences of stations (e.g. Bucuresti - Brasov)
+- **route_stops** - junction between a route and a station, with a `stop_number` defining the travel order
+- **trains** - physical assets with a seat capacity and a service number (e.g. IR 1581)
+- **schedules** - bind a train to a route for a specific run
+- **schedule_stops** - the timetable entry for one stop within a schedule, storing both arrival and departure timestamps independently to model dwell time
+- **users** - application accounts; passwords stored exclusively as BCrypt hashes
+- **bookings** - groups one or more tickets under one transaction for a single user
+- **tickets** - one seat on one schedule between two `schedule_stops` (departure and arrival)
+- **delays** - a reported delay on a schedule starting from a given stop, used to drive email notifications
 
-The central relationship is `schedule_stop`: it sits at the intersection of a `schedule` (which train, which route) and a `route_stop` (which station, in what position). A ticket references two `schedule_stops` on the same schedule — its board and alight points.
+The central relationship is `schedule_stop`: it sits at the intersection of a `schedule` (which train, which route) and a `route_stop` (which station, in what position). A ticket references two `schedule_stops` on the same schedule - its board and alight points.
 
 ---
 
@@ -40,7 +40,7 @@ The central relationship is `schedule_stop`: it sits at the intersection of a `s
 
 ### Authentication
 
-**Login** — `POST /api/auth/login`
+**Login** - `POST /api/auth/login`
 
 ```json
 { "username": "sofia.balaci", "password": "password123" }
@@ -48,13 +48,14 @@ The central relationship is `schedule_stop`: it sits at the intersection of a `s
 
 Returns `200` with `{ "id", "username", "role" }` on success, `401` on bad credentials.
 
-**Register** — `POST /api/auth/register`
+**Register** - `POST /api/auth/register`
 
 ```json
 { "username": "ion.popescu", "email": "ion@example.com", "password": "mypassword" }
 ```
 
 Returns `201` on success. Returns `409` if the username or email is already taken. New accounts are always created with the `CLIENT` role; admin accounts must be inserted directly in the database.
+This is not a realistic setup, it s present to showcase the different roles and the register specifically is for other users to try out the app and get the email.
 
 ---
 
@@ -62,7 +63,7 @@ Returns `201` on success. Returns `409` if the username or email is already take
 
 `GET /api/search?fromStationId={id}&toStationId={id}`
 
-Returns all connections between the two stations across every schedule, split into direct routes and routes with one changeover. No date filtering is applied at the API level — every scheduled run that matches is returned, and callers can filter by date on their end.
+Returns all connections between the two stations across every schedule, split into direct routes and routes with one changeover. No date filtering is applied at the API level - every scheduled run that matches is returned, and callers can filter by date on their end.
 
 **Example response:**
 
@@ -105,15 +106,15 @@ Returns all connections between the two stations across every schedule, split in
 }
 ```
 
-If no connection exists the response contains empty arrays — never an error status.
+If no connection exists the response contains empty arrays - never an error status.
 
-**Algorithm — two passes:**
+**Algorithm - two passes:**
 
 1. **Direct routes.** Load all `schedule_stops` at the departure station and all at the arrival station. Group both sets by `schedule_id`. For every schedule present in both groups, check that the departure `stop_number` is lower than the arrival `stop_number` (ensuring the correct direction of travel). Each match becomes a `DirectRoute`.
 
 2. **Changeover routes.** For each departure-station stop that did not produce a direct route, fetch all later stops on the same schedule (`findLaterStopsOnSchedule`). Each later stop is a candidate changeover station. For each candidate, find all `schedule_stops` at that station belonging to a *different* schedule. If any of those stops belongs to a schedule that also serves the final destination (with correct stop ordering), and the connecting departure is strictly after the changeover arrival, the two legs form a `ChangeoverRoute`.
 
-**Possible improvement — multiple changeovers**
+**Possible improvement - multiple changeovers**
 
 The current implementation supports at most one changeover. To support N changeovers the natural extension is a graph search:
 
@@ -121,7 +122,7 @@ The current implementation supports at most one changeover. To support N changeo
 - Run a BFS or Dijkstra expansion from all `schedule_stops` at the departure station. Depth 0 gives direct routes, depth 1 gives one changeover, and so on. A maximum-depth cutoff (e.g. 3 changeovers) and a maximum total-journey-time cutoff keep the result set manageable.
 - A priority queue keyed on estimated arrival time at the destination (Dijkstra-style) naturally surfaces the fastest journeys first.
 
-This approach requires no schema changes — the existing `schedule_stops` table already contains all the information needed. Caching all `schedule_stops` in memory at startup as maps keyed by station and by schedule would make each BFS expansion nearly free in terms of database queries.
+This approach requires no schema changes - the existing `schedule_stops` table already contains all the information needed. Caching all `schedule_stops` in memory at startup as maps keyed by station and by schedule would make each BFS expansion nearly free in terms of database queries.
 
 ---
 
@@ -162,36 +163,36 @@ Hello sofia.balaci,
 Your booking has been confirmed.
 
 Tickets (2):
-  1. Bucuresti Nord → Brasov       | 2026-05-15 | 08:00
-  2. Brasov         → Cluj-Napoca  | 2026-05-15 | 12:00
+  1. Bucuresti Nord -> Brasov       | 2026-05-15 | 08:00
+  2. Brasov         -> Cluj-Napoca  | 2026-05-15 | 12:00
 
 Thank you for travelling with us!
 ```
 
 ---
 
-### Admin — Route and Schedule Management
+### Admin - Route and Schedule Management
 
 All endpoints follow standard REST conventions. The complete interactive reference is at `/swagger-ui.html`.
 
-- **Stations** — `GET / POST / DELETE /api/stations`
-- **Trains** — `GET / POST / PUT / DELETE /api/trains`
-- **Routes** — `GET / POST / PUT / DELETE /api/routes`
-- **Route stops** — `GET / POST / PUT / DELETE /api/route-stops` — each entry links a route, a station, and a `stopNumber`
-- **Schedules** — `GET / POST / DELETE /api/schedules` — binds a train to a route
-- **Schedule stops** — `GET / POST / PUT / DELETE /api/schedule-stops` — assigns concrete arrival and departure timestamps to one route stop within a schedule
+- **Stations** - `GET / POST / DELETE /api/stations`
+- **Trains** - `GET / POST / PUT / DELETE /api/trains`
+- **Routes** - `GET / POST / PUT / DELETE /api/routes`
+- **Route stops** - `GET / POST / PUT / DELETE /api/route-stops` - each entry links a route, a station, and a `stopNumber`
+- **Schedules** - `GET / POST / DELETE /api/schedules` - binds a train to a route
+- **Schedule stops** - `GET / POST / PUT / DELETE /api/schedule-stops` - assigns concrete arrival and departure timestamps to one route stop within a schedule
 
 ---
 
-### Admin — Bookings
+### Admin - Bookings
 
-- `GET /api/bookings` — all bookings across all users
-- `GET /api/bookings/{id}` — single booking with its tickets
-- `DELETE /api/bookings/{id}` — cancel a booking
+- `GET /api/bookings` - all bookings across all users
+- `GET /api/bookings/{id}` - single booking with its tickets
+- `DELETE /api/bookings/{id}` - cancel a booking
 
 ---
 
-### Admin — Delay Reporting
+### Admin - Delay Reporting
 
 `POST /api/delays`
 
@@ -202,8 +203,8 @@ All endpoints follow standard REST conventions. The complete interactive referen
   "delayMinutes": 20
 }
 ```
-
-The service finds all passengers affected by the delay — those whose ticket on that schedule arrives beyond the delayed stop:
+The delay is considered to occur before arriving at the stop @fromScheduleStopId.
+The service finds all passengers affected by the delay - those whose ticket on that schedule arrives beyond the delayed stop:
 
 ```sql
 SELECT t FROM Ticket t
@@ -229,11 +230,11 @@ We apologise for the inconvenience.
 
 ## Tests
 
-The test suite uses JUnit 5 with Mockito. No Spring context is loaded — all dependencies are mocked. Three service classes with non-trivial business logic are covered:
+The test suite uses JUnit 5 with Mockito. No Spring context is loaded - all dependencies are mocked. Three service classes with non-trivial business logic are covered:
 
-- **RouteSearchServiceTest** — direct route found; wrong direction rejected; no shared schedule; valid changeover; changeover rejected when the connecting departure is before the changeover arrival
-- **BookingServiceImplTest** — successful booking; train full; last seat taken; multiple tickets with one confirmation email; second ticket sold out rolls back the entire transaction
-- **DelayServiceImplTest** — delay saved and all affected passengers notified; delay saved with no passengers to notify
+- **RouteSearchServiceTest** - direct route found; wrong direction rejected; no shared schedule; valid changeover; changeover rejected when the connecting departure is before the changeover arrival
+- **BookingServiceImplTest** - successful booking; train full; last seat taken; multiple tickets with one confirmation email; second ticket sold out rolls back the entire transaction
+- **DelayServiceImplTest** - delay saved and all affected passengers notified; delay saved with no passengers to notify
 
 ---
 
@@ -247,15 +248,21 @@ The test suite uses JUnit 5 with Mockito. No Spring context is loaded — all de
 
 ### 1. Create the database
 
-This is the only SQL you need to run manually:
-
 ```sql
 CREATE DATABASE train_db;
 ```
 
-Everything else — table creation and seed data — happens automatically on first startup. Hibernate creates the schema via `ddl-auto=update`, then Spring Boot executes `src/main/resources/data.sql`, which uses `ON CONFLICT DO NOTHING` so it is safe to re-run on every subsequent restart without duplicating data.
+### 2. Populate the schema and seed data
 
-### 2. Configure application.properties
+Connect to `train_db` and run:
+
+```bash
+psql -U postgres -d train_db -f plan/seed.sql
+```
+
+Spring Boot's `ddl-auto=update` creates the tables on first startup, but running `seed.sql` after the first boot ensures sequences and demo data are in place.
+
+### 3. Configure application.properties
 
 Edit `src/main/resources/application.properties`:
 
@@ -272,7 +279,7 @@ spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 ```
 
-### 3. Run
+### 4. Run
 
 ```bash
 ./mvnw spring-boot:run
