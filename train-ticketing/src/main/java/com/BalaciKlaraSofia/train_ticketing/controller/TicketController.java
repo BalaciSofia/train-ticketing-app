@@ -18,7 +18,8 @@ public class TicketController {
     }
 
     @GetMapping
-    public List<Ticket> getAll() {
+    public List<Ticket> getAll(@RequestParam(required = false) Integer trainId) {
+        if (trainId != null) return ticketService.findByTrainId(trainId);
         return ticketService.getAll();
     }
 

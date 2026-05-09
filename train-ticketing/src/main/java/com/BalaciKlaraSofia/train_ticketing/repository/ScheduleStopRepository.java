@@ -14,4 +14,7 @@ public interface ScheduleStopRepository extends JpaRepository<ScheduleStop, Inte
 
     @Query("SELECT ss FROM ScheduleStop ss WHERE ss.schedule.id = :scheduleId AND ss.routeStop.stopNumber > :stopNumber")
     List<ScheduleStop> findLaterStopsOnSchedule(@Param("scheduleId") Integer scheduleId, @Param("stopNumber") Integer stopNumber);
+
+    @Query("SELECT ss FROM ScheduleStop ss WHERE ss.schedule.id = :scheduleId")
+    List<ScheduleStop> findByScheduleId(@Param("scheduleId") Integer scheduleId);
 }

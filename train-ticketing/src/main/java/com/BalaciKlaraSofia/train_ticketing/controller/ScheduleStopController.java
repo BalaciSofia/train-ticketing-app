@@ -18,7 +18,10 @@ public class ScheduleStopController {
     }
 
     @GetMapping
-    public List<ScheduleStop> getAll() {
+    public List<ScheduleStop> getAll(@RequestParam(required = false) Integer scheduleId) {
+        if (scheduleId != null) {
+            return scheduleStopService.findByScheduleId(scheduleId);
+        }
         return scheduleStopService.getAll();
     }
 

@@ -51,4 +51,9 @@ public class ScheduleStopServiceImpl implements ScheduleStopService {
     public List<ScheduleStop> findLaterStopsOnSchedule(Integer scheduleId, Integer stopNumber) {
         return scheduleStopRepository.findLaterStopsOnSchedule(scheduleId, stopNumber);
     }
+
+    @Override
+    public List<ScheduleStop> findByScheduleId(Integer scheduleId) {
+        return scheduleStopRepository.findByScheduleId(scheduleId);
+    }
 }

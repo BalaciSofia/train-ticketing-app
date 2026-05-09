@@ -46,6 +46,17 @@ public class TicketServiceImpl implements TicketService {
     public long countOverlappingTickets(Integer scheduleId, Integer departureStopNumber, Integer arrivalStopNumber) {
         return ticketRepository.countOverlappingTickets(scheduleId, departureStopNumber, arrivalStopNumber);
     }
+
+    @Override
+    public List<Ticket> findByScheduleId(Integer scheduleId) {
+        return ticketRepository.findByScheduleId(scheduleId);
+    }
+
+    @Override
+    public List<Ticket> findByTrainId(Integer trainId) {
+        return ticketRepository.findByTrainId(trainId);
+    }
+
     @Override
     public List<Ticket> findAffectedByDelay(Integer scheduleId, Integer fromStopNumber) {
         return ticketRepository.findAffectedByDelay(scheduleId, fromStopNumber);

@@ -8,6 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface TicketRepository extends JpaRepository<Ticket, Integer> {
+
+    @Query("SELECT t FROM Ticket t WHERE t.departureScheduleStop.schedule.id = :scheduleId")
+    List<Ticket> findByScheduleId(@Param("scheduleId") Integer scheduleId);
+
+    @Query("SELECT t FROM Ticket t WHERE t.departureScheduleStop.schedule.train.id = :trainId")
+    List<Ticket> findByTrainId(@Param("trainId") Integer trainId);
+
     @Query("SELECT t FROM Ticket t " +
            "WHERE t.departureScheduleStop.schedule.id = :scheduleId " +
            "AND t.arrivalScheduleStop.routeStop.stopNumber > :fromStopNumber")
