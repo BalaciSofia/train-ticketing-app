@@ -1,17 +1,15 @@
 package com.BalaciKlaraSofia.train_ticketing.dto;
 
+import java.util.List;
+
 public class BookingRequest {
     private Integer userId;
-    private Integer departureScheduleStopId;
-    private Integer arrivalScheduleStopId;
+    private List<TicketRequest> tickets;
 
     public BookingRequest() {}
 
     public Integer getUserId() { return userId; }
-    public Integer getDepartureScheduleStopId() { return departureScheduleStopId; }
-    public Integer getArrivalScheduleStopId() { return arrivalScheduleStopId; }
-
+    public List<TicketRequest> getTickets() { return tickets; }
     public void setUserId(Integer userId) { this.userId = userId; }
-    public void setDepartureScheduleStopId(Integer departureScheduleStopId) { this.departureScheduleStopId = departureScheduleStopId; }
-    public void setArrivalScheduleStopId(Integer arrivalScheduleStopId) { this.arrivalScheduleStopId = arrivalScheduleStopId; }
+    public void setTickets(List<TicketRequest> tickets) { this.tickets = tickets; }
 }
