@@ -10,24 +10,26 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Integer routeId;
+    @ManyToOne
+    @JoinColumn(name = "route_id", nullable = false)
+    private Route route;
 
-    @Column(nullable = false)
-    private Integer trainId;
+    @ManyToOne
+    @JoinColumn(name = "train_id", nullable = false)
+    private Train train;
 
     protected Schedule() {}
 
-    public Schedule(Integer routeId, Integer trainId) {
-        this.routeId = routeId;
-        this.trainId = trainId;
+    public Schedule(Route route, Train train) {
+        this.route = route;
+        this.train = train;
     }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
-    public Integer getRouteId() { return routeId; }
-    public Integer getTrainId() { return trainId; }
+    public Route getRoute() { return route; }
+    public Train getTrain() { return train; }
 
-    public void setRouteId(Integer routeId) { this.routeId = routeId; }
-    public void setTrainId(Integer trainId) { this.trainId = trainId; }
+    public void setRoute(Route route) { this.route = route; }
+    public void setTrain(Train train) { this.train = train; }
 }

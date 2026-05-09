@@ -11,11 +11,13 @@ public class ScheduleStop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Integer scheduleId;
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedule schedule;
 
-    @Column(nullable = false)
-    private Integer routeStopId;
+    @ManyToOne
+    @JoinColumn(name = "route_stop_id", nullable = false)
+    private RouteStop routeStop;
 
     @Column(nullable = false)
     private LocalDateTime arrivalTime;
@@ -25,22 +27,22 @@ public class ScheduleStop {
 
     protected ScheduleStop() {}
 
-    public ScheduleStop(Integer scheduleId, Integer routeStopId, LocalDateTime arrivalTime, LocalDateTime departureTime) {
-        this.scheduleId = scheduleId;
-        this.routeStopId = routeStopId;
+    public ScheduleStop(Schedule schedule, RouteStop routeStop, LocalDateTime arrivalTime, LocalDateTime departureTime) {
+        this.schedule = schedule;
+        this.routeStop = routeStop;
         this.arrivalTime = arrivalTime;
         this.departureTime = departureTime;
     }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
-    public Integer getScheduleId() { return scheduleId; }
-    public Integer getRouteStopId() { return routeStopId; }
+    public Schedule getSchedule() { return schedule; }
+    public RouteStop getRouteStop() { return routeStop; }
     public LocalDateTime getArrivalTime() { return arrivalTime; }
     public LocalDateTime getDepartureTime() { return departureTime; }
 
-    public void setScheduleId(Integer scheduleId) { this.scheduleId = scheduleId; }
-    public void setRouteStopId(Integer routeStopId) { this.routeStopId = routeStopId; }
+    public void setSchedule(Schedule schedule) { this.schedule = schedule; }
+    public void setRouteStop(RouteStop routeStop) { this.routeStop = routeStop; }
     public void setArrivalTime(LocalDateTime arrivalTime) { this.arrivalTime = arrivalTime; }
     public void setDepartureTime(LocalDateTime departureTime) { this.departureTime = departureTime; }
 }

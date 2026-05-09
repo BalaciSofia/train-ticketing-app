@@ -10,24 +10,25 @@ public class Delay {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Integer scheduleId;
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedule schedule;
 
     @Column(nullable = false)
     private Integer delayMinutes;
 
     protected Delay() {}
 
-    public Delay(Integer scheduleId, Integer delayMinutes) {
-        this.scheduleId = scheduleId;
+    public Delay(Schedule schedule, Integer delayMinutes) {
+        this.schedule = schedule;
         this.delayMinutes = delayMinutes;
     }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
-    public Integer getScheduleId() { return scheduleId; }
+    public Schedule getSchedule() { return schedule; }
     public Integer getDelayMinutes() { return delayMinutes; }
 
-    public void setScheduleId(Integer scheduleId) { this.scheduleId = scheduleId; }
+    public void setSchedule(Schedule schedule) { this.schedule = schedule; }
     public void setDelayMinutes(Integer delayMinutes) { this.delayMinutes = delayMinutes; }
 }

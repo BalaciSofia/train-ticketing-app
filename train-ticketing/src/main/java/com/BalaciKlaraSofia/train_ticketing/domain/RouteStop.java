@@ -10,30 +10,32 @@ public class RouteStop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Integer routeId;
+    @ManyToOne
+    @JoinColumn(name = "route_id", nullable = false)
+    private Route route;
 
-    @Column(nullable = false)
-    private Integer stationId;
+    @ManyToOne
+    @JoinColumn(name = "station_id", nullable = false)
+    private Station station;
 
     @Column(nullable = false)
     private Integer stopNumber;
 
     protected RouteStop() {}
 
-    public RouteStop(Integer routeId, Integer stationId, Integer stopNumber) {
-        this.routeId = routeId;
-        this.stationId = stationId;
+    public RouteStop(Route route, Station station, Integer stopNumber) {
+        this.route = route;
+        this.station = station;
         this.stopNumber = stopNumber;
     }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
-    public Integer getRouteId() { return routeId; }
-    public Integer getStationId() { return stationId; }
+    public Route getRoute() { return route; }
+    public Station getStation() { return station; }
     public Integer getStopNumber() { return stopNumber; }
 
-    public void setRouteId(Integer routeId) { this.routeId = routeId; }
-    public void setStationId(Integer stationId) { this.stationId = stationId; }
+    public void setRoute(Route route) { this.route = route; }
+    public void setStation(Station station) { this.station = station; }
     public void setStopNumber(Integer stopNumber) { this.stopNumber = stopNumber; }
 }

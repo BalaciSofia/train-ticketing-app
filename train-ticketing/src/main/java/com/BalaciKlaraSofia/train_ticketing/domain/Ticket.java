@@ -10,30 +10,33 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Integer bookingId;
+    @ManyToOne
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
 
-    @Column(nullable = false)
-    private Integer departureScheduleStopId;
+    @ManyToOne
+    @JoinColumn(name = "departure_schedule_stop_id", nullable = false)
+    private ScheduleStop departureScheduleStop;
 
-    @Column(nullable = false)
-    private Integer arrivalScheduleStopId;
+    @ManyToOne
+    @JoinColumn(name = "arrival_schedule_stop_id", nullable = false)
+    private ScheduleStop arrivalScheduleStop;
 
     protected Ticket() {}
 
-    public Ticket(Integer bookingId, Integer departureScheduleStopId, Integer arrivalScheduleStopId) {
-        this.bookingId = bookingId;
-        this.departureScheduleStopId = departureScheduleStopId;
-        this.arrivalScheduleStopId = arrivalScheduleStopId;
+    public Ticket(Booking booking, ScheduleStop departureScheduleStop, ScheduleStop arrivalScheduleStop) {
+        this.booking = booking;
+        this.departureScheduleStop = departureScheduleStop;
+        this.arrivalScheduleStop = arrivalScheduleStop;
     }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
-    public Integer getBookingId() { return bookingId; }
-    public Integer getDepartureScheduleStopId() { return departureScheduleStopId; }
-    public Integer getArrivalScheduleStopId() { return arrivalScheduleStopId; }
+    public Booking getBooking() { return booking; }
+    public ScheduleStop getDepartureScheduleStop() { return departureScheduleStop; }
+    public ScheduleStop getArrivalScheduleStop() { return arrivalScheduleStop; }
 
-    public void setBookingId(Integer bookingId) { this.bookingId = bookingId; }
-    public void setDepartureScheduleStopId(Integer departureScheduleStopId) { this.departureScheduleStopId = departureScheduleStopId; }
-    public void setArrivalScheduleStopId(Integer arrivalScheduleStopId) { this.arrivalScheduleStopId = arrivalScheduleStopId; }
+    public void setBooking(Booking booking) { this.booking = booking; }
+    public void setDepartureScheduleStop(ScheduleStop departureScheduleStop) { this.departureScheduleStop = departureScheduleStop; }
+    public void setArrivalScheduleStop(ScheduleStop arrivalScheduleStop) { this.arrivalScheduleStop = arrivalScheduleStop; }
 }

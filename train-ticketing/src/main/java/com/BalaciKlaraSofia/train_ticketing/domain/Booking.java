@@ -10,18 +10,18 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     protected Booking() {}
 
-    public Booking(Integer userId) {
-        this.userId = userId;
+    public Booking(User user) {
+        this.user = user;
     }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
-    public Integer getUserId() { return userId; }
-
-    public void setUserId(Integer userId) { this.userId = userId; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }
