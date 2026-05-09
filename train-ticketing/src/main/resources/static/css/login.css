@@ -113,3 +113,33 @@ button:disabled {
     margin-top: 16px;
     text-align: center;
 }
+
+.success {
+    display: none;
+    background-color: #edf7ee;
+    border: 1px solid #7ec87e;
+    color: #2e6b2e;
+    font-size: 0.82rem;
+    font-family: Arial, sans-serif;
+    padding: 9px 12px;
+    border-radius: 3px;
+    margin-top: 16px;
+    text-align: center;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.82rem;
+    font-family: Arial, sans-serif;
+    color: #9e7b5a;
+}
+
+.register-link a {
+    color: #7a4f2d;
+    text-decoration: none;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}

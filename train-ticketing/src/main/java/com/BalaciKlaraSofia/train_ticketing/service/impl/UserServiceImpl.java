@@ -1,7 +1,9 @@
 package com.BalaciKlaraSofia.train_ticketing.service.impl;
 
 import com.BalaciKlaraSofia.train_ticketing.domain.User;
+import com.BalaciKlaraSofia.train_ticketing.domain.UserRole;
 import com.BalaciKlaraSofia.train_ticketing.dto.LoginRequest;
+import com.BalaciKlaraSofia.train_ticketing.dto.RegisterRequest;
 import com.BalaciKlaraSofia.train_ticketing.repository.UserRepository;
 import com.BalaciKlaraSofia.train_ticketing.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,5 +51,11 @@ public class UserServiceImpl implements UserService {
     public Optional<User> login(LoginRequest request) {
         return userRepository.findByUsername(request.getUsername())
                 .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPasswordHash()));
+    }
+
+    @Override
+    public User register(RegisterRequest request) {
+        String hash = passwordEncoder.encode(request.getPassword());
+        return userRepository.save(new User(request.getUsername(), request.getEmail(), hash, UserRole.CLIENT));
     }
 }

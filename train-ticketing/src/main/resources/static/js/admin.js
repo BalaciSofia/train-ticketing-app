@@ -3,6 +3,11 @@ if (!user || user.role !== 'ADMIN') window.location.href = '/login.html';
 
 document.getElementById('adminName').textContent = user.username;
 
+function logout() {
+    sessionStorage.removeItem('user');
+    window.location.href = '/login.html';
+}
+
 let allStations = [];
 let allRouteStops = [];
 let selectedRouteId = null;

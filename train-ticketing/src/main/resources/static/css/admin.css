@@ -32,6 +32,29 @@ header span {
     opacity: 0.85;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-logout {
+    background: transparent;
+    border: 1px solid rgba(250, 246, 239, 0.5);
+    color: #faf6ef;
+    font-size: 0.78rem;
+    font-family: Arial, sans-serif;
+    letter-spacing: 0.06em;
+    padding: 5px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-logout:hover {
+    background-color: rgba(250, 246, 239, 0.15);
+}
+
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
