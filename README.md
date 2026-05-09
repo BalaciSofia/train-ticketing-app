@@ -2,7 +2,6 @@
 
 A Spring Boot REST application for managing train schedules, bookings, and delay notifications. Supports two roles: **CLIENT** (search routes, book tickets) and **ADMIN** (manage the full catalogue, report delays).
 
----
 
 ## Technology Stack
 
@@ -13,7 +12,6 @@ A Spring Boot REST application for managing train schedules, bookings, and delay
 - springdoc-openapi - Swagger UI auto-generated at `/swagger-ui.html`
 - JUnit 5 + Mockito - unit tests
 
----
 
 ## Database Schema
 
@@ -34,7 +32,6 @@ The domain consists of ten tables:
 
 The central relationship is `schedule_stop`: it sits at the intersection of a `schedule` (which train, which route) and a `route_stop` (which station, in what position). A ticket references two `schedule_stops` on the same schedule - its board and alight points.
 
----
 
 ## Functionalities
 
@@ -57,7 +54,6 @@ Returns `200` with `{ "id", "username", "role" }` on success, `401` on bad crede
 Returns `201` on success. Returns `409` if the username or email is already taken. New accounts are always created with the `CLIENT` role; admin accounts must be inserted directly in the database.
 This is not a realistic setup, it s present to showcase the different roles and the register specifically is for other users to try out the app and get the email.
 
----
 
 ### Route Search
 
@@ -124,8 +120,6 @@ The current implementation supports at most one changeover. To support N changeo
 
 This approach requires no schema changes - the existing `schedule_stops` table already contains all the information needed. Caching all `schedule_stops` in memory at startup as maps keyed by station and by schedule would make each BFS expansion nearly free in terms of database queries.
 
----
-
 ### Booking
 
 `POST /api/bookings`
@@ -169,8 +163,6 @@ Tickets (2):
 Thank you for travelling with us!
 ```
 
----
-
 ### Admin - Route and Schedule Management
 
 All endpoints follow standard REST conventions. The complete interactive reference is at `/swagger-ui.html`.
@@ -182,7 +174,6 @@ All endpoints follow standard REST conventions. The complete interactive referen
 - **Schedules** - `GET / POST / DELETE /api/schedules` - binds a train to a route
 - **Schedule stops** - `GET / POST / PUT / DELETE /api/schedule-stops` - assigns concrete arrival and departure timestamps to one route stop within a schedule
 
----
 
 ### Admin - Bookings
 
@@ -190,7 +181,6 @@ All endpoints follow standard REST conventions. The complete interactive referen
 - `GET /api/bookings/{id}` - single booking with its tickets
 - `DELETE /api/bookings/{id}` - cancel a booking
 
----
 
 ### Admin - Delay Reporting
 
@@ -226,7 +216,6 @@ Original departure: 2026-05-15 | 09:05
 We apologise for the inconvenience.
 ```
 
----
 
 ## Tests
 
@@ -236,7 +225,6 @@ The test suite uses JUnit 5 with Mockito. No Spring context is loaded - all depe
 - **BookingServiceImplTest** - successful booking; train full; last seat taken; multiple tickets with one confirmation email; second ticket sold out rolls back the entire transaction
 - **DelayServiceImplTest** - delay saved and all affected passengers notified; delay saved with no passengers to notify
 
----
 
 ## Setup Guide
 
@@ -262,24 +250,7 @@ psql -U postgres -d train_db -f plan/seed.sql
 
 Spring Boot's `ddl-auto=update` creates the tables on first startup, but running `seed.sql` after the first boot ensures sequences and demo data are in place.
 
-### 3. Configure application.properties
-
-Edit `src/main/resources/application.properties`:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/train_db
-spring.datasource.username=postgres
-spring.datasource.password=<your-db-password>
-
-spring.mail.host=smtp.gmail.com
-spring.mail.port=587
-spring.mail.username=<your-gmail-address>
-spring.mail.password=<gmail-app-password>
-spring.mail.properties.mail.smtp.auth=true
-spring.mail.properties.mail.smtp.starttls.enable=true
-```
-
-### 4. Run
+### 3. Run
 
 ```bash
 ./mvnw spring-boot:run
@@ -291,10 +262,7 @@ The application starts on port 8080. The Swagger UI is at `http://localhost:8080
 
 | Username | Password | Role |
 |---|---|---|
-| admin | password | ADMIN |
-| sofia.balaci | password | CLIENT |
-| cristian.alexutan | password | CLIENT |
+| admin | password123 | ADMIN |
+| sofia.balaci | password123 | CLIENT |
+| cristian.alexutan | password123 | CLIENT |
 
-### Overbooking test
-
-Schedule 4 (train IR 9999, 2 seats) runs on 2026-05-16. The seed pre-fills both seats, so a booking attempt on that segment returns a sold-out error without affecting the main 2026-05-15 data.
