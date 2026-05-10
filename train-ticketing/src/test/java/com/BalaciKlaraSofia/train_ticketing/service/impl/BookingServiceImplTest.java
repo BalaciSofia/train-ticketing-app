@@ -4,7 +4,6 @@ import com.BalaciKlaraSofia.train_ticketing.domain.*;
 import com.BalaciKlaraSofia.train_ticketing.dto.BookingRequest;
 import com.BalaciKlaraSofia.train_ticketing.dto.TicketRequest;
 import com.BalaciKlaraSofia.train_ticketing.repository.BookingRepository;
-import com.BalaciKlaraSofia.train_ticketing.service.EmailService;
 import com.BalaciKlaraSofia.train_ticketing.service.ScheduleStopService;
 import com.BalaciKlaraSofia.train_ticketing.service.TicketService;
 import com.BalaciKlaraSofia.train_ticketing.service.UserService;
@@ -30,7 +29,7 @@ class BookingServiceImplTest {
     @Mock private TicketService ticketService;
     @Mock private ScheduleStopService scheduleStopService;
     @Mock private UserService userService;
-    @Mock private EmailService emailService;
+    @Mock private EmailServiceImpl emailService;
 
     @InjectMocks private BookingServiceImpl bookingService;
 

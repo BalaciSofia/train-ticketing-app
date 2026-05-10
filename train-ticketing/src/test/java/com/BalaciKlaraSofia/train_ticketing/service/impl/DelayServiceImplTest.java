@@ -3,7 +3,6 @@ package com.BalaciKlaraSofia.train_ticketing.service.impl;
 import com.BalaciKlaraSofia.train_ticketing.domain.*;
 import com.BalaciKlaraSofia.train_ticketing.dto.DelayRequest;
 import com.BalaciKlaraSofia.train_ticketing.repository.DelayRepository;
-import com.BalaciKlaraSofia.train_ticketing.service.EmailService;
 import com.BalaciKlaraSofia.train_ticketing.service.ScheduleService;
 import com.BalaciKlaraSofia.train_ticketing.service.ScheduleStopService;
 import com.BalaciKlaraSofia.train_ticketing.service.TicketService;
@@ -27,7 +26,7 @@ class DelayServiceImplTest {
     @Mock private ScheduleService scheduleService;
     @Mock private ScheduleStopService scheduleStopService;
     @Mock private TicketService ticketService;
-    @Mock private EmailService emailService;
+    @Mock private EmailServiceImpl emailService;
 
     @InjectMocks private DelayServiceImpl delayService;
 

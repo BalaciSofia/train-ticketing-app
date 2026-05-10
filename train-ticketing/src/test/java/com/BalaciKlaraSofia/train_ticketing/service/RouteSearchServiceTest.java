@@ -2,6 +2,7 @@ package com.BalaciKlaraSofia.train_ticketing.service;
 
 import com.BalaciKlaraSofia.train_ticketing.domain.*;
 import com.BalaciKlaraSofia.train_ticketing.dto.RouteSearchResult;
+import com.BalaciKlaraSofia.train_ticketing.service.impl.RouteSearchServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +23,7 @@ class RouteSearchServiceTest {
 
     @Mock private ScheduleStopService scheduleStopService;
 
-    @InjectMocks private RouteSearchService routeSearchService;
+    @InjectMocks private RouteSearchServiceImpl routeSearchService;
 
     private ScheduleStop mockStop(int id, int scheduleId, String trainNumber,
                                   int stationId, String city, int stopNumber,

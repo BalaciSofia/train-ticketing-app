@@ -244,7 +244,6 @@ The test suite uses JUnit 5 with Mockito. No Spring context is loaded - all depe
 
 - Java 25
 - PostgreSQL 14 or later
-- An SMTP account (e.g. a Gmail app password)
 
 ### 1. Create the database
 
@@ -262,24 +261,7 @@ psql -U postgres -d train_db -f plan/seed.sql
 
 Spring Boot's `ddl-auto=update` creates the tables on first startup, but running `seed.sql` after the first boot ensures sequences and demo data are in place.
 
-### 3. Configure application.properties
-
-Edit `src/main/resources/application.properties`:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/train_db
-spring.datasource.username=postgres
-spring.datasource.password=<your-db-password>
-
-spring.mail.host=smtp.gmail.com
-spring.mail.port=587
-spring.mail.username=<your-gmail-address>
-spring.mail.password=<gmail-app-password>
-spring.mail.properties.mail.smtp.auth=true
-spring.mail.properties.mail.smtp.starttls.enable=true
-```
-
-### 4. Run
+### 3. Run
 
 ```bash
 ./mvnw spring-boot:run
