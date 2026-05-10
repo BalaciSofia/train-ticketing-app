@@ -3,7 +3,10 @@ package com.BalaciKlaraSofia.train_ticketing.domain;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "tickets")
+@Table(name = "tickets", indexes = {
+        @Index(name = "idx_ticket_dep_stop", columnList = "departure_schedule_stop_id"),
+        @Index(name = "idx_ticket_arr_stop", columnList = "arrival_schedule_stop_id")
+})
 public class Ticket {
 
     @Id
