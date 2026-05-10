@@ -6,6 +6,7 @@ import com.BalaciKlaraSofia.train_ticketing.domain.ScheduleStop;
 import com.BalaciKlaraSofia.train_ticketing.domain.Ticket;
 import com.BalaciKlaraSofia.train_ticketing.dto.DelayRequest;
 import com.BalaciKlaraSofia.train_ticketing.repository.DelayRepository;
+import com.BalaciKlaraSofia.train_ticketing.exception.NotFoundException;
 import com.BalaciKlaraSofia.train_ticketing.service.DelayService;
 import com.BalaciKlaraSofia.train_ticketing.service.EmailService;
 import com.BalaciKlaraSofia.train_ticketing.service.ScheduleService;
@@ -54,10 +55,10 @@ public class DelayServiceImpl implements DelayService {
     @Override
     public Delay report(DelayRequest request) {
         Schedule schedule = scheduleService.getById(request.getScheduleId())
-                .orElseThrow(() -> new IllegalArgumentException("Schedule not found"));
+                .orElseThrow(() -> new NotFoundException("Schedule not found"));
 
         ScheduleStop fromStop = scheduleStopService.getById(request.getFromScheduleStopId())
-                .orElseThrow(() -> new IllegalArgumentException("From stop not found"));
+                .orElseThrow(() -> new NotFoundException("From stop not found"));
 
         Delay delay = delayRepository.save(new Delay(schedule, fromStop, request.getDelayMinutes()));
 

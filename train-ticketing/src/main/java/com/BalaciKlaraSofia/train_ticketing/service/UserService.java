@@ -13,6 +13,6 @@ public interface UserService {
     User add(User user);
     User update(User user);
     void delete(Integer id);
-    Optional<User> login(LoginRequest request);
+    User login(LoginRequest request);
     User register(RegisterRequest request);
 }

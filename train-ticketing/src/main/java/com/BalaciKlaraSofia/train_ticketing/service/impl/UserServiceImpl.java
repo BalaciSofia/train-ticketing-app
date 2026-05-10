@@ -4,6 +4,8 @@ import com.BalaciKlaraSofia.train_ticketing.domain.User;
 import com.BalaciKlaraSofia.train_ticketing.domain.UserRole;
 import com.BalaciKlaraSofia.train_ticketing.dto.LoginRequest;
 import com.BalaciKlaraSofia.train_ticketing.dto.RegisterRequest;
+import com.BalaciKlaraSofia.train_ticketing.exception.InvalidCredentialsException;
+import com.BalaciKlaraSofia.train_ticketing.exception.UserAlreadyExistsException;
 import com.BalaciKlaraSofia.train_ticketing.repository.UserRepository;
 import com.BalaciKlaraSofia.train_ticketing.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,13 +50,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> login(LoginRequest request) {
+    public User login(LoginRequest request) {
         return userRepository.findByUsername(request.getUsername())
-                .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPasswordHash()));
+                .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPasswordHash()))
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
     }
 
     @Override
     public User register(RegisterRequest request) {
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new UserAlreadyExistsException("Username is already in use");
+        }
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("Email is already in use");
+        }
         String hash = passwordEncoder.encode(request.getPassword());
         return userRepository.save(new User(request.getUsername(), request.getEmail(), hash, UserRole.CLIENT));
     }

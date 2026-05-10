@@ -4,6 +4,8 @@ import com.BalaciKlaraSofia.train_ticketing.domain.*;
 import com.BalaciKlaraSofia.train_ticketing.dto.BookingRequest;
 import com.BalaciKlaraSofia.train_ticketing.dto.TicketRequest;
 import com.BalaciKlaraSofia.train_ticketing.repository.BookingRepository;
+import com.BalaciKlaraSofia.train_ticketing.exception.NoSeatsAvailableException;
+import com.BalaciKlaraSofia.train_ticketing.exception.NotFoundException;
 import com.BalaciKlaraSofia.train_ticketing.service.BookingService;
 import com.BalaciKlaraSofia.train_ticketing.service.EmailService;
 import com.BalaciKlaraSofia.train_ticketing.service.ScheduleStopService;
@@ -55,15 +57,15 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public Booking book(BookingRequest request) {
         User user = userService.getById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         List<ScheduleStop[]> stopPairs = new ArrayList<>();
 
         for (TicketRequest ticketReq : request.getTickets()) {
             ScheduleStop depStop = scheduleStopService.getById(ticketReq.getDepartureScheduleStopId())
-                    .orElseThrow(() -> new IllegalArgumentException("Departure stop not found"));
+                    .orElseThrow(() -> new NotFoundException("Departure stop not found"));
             ScheduleStop arrStop = scheduleStopService.getById(ticketReq.getArrivalScheduleStopId())
-                    .orElseThrow(() -> new IllegalArgumentException("Arrival stop not found"));
+                    .orElseThrow(() -> new NotFoundException("Arrival stop not found"));
 
             int capacity = depStop.getSchedule().getTrain().getNumberOfSeats();
             long occupied = ticketService.countOverlappingTickets(
@@ -73,7 +75,7 @@ public class BookingServiceImpl implements BookingService {
             );
 
             if (occupied >= capacity) {
-                throw new IllegalStateException("No seats available on schedule "
+                throw new NoSeatsAvailableException("No seats available on schedule "
                         + depStop.getSchedule().getId()
                         + " between stops "
                         + depStop.getRouteStop().getStopNumber()

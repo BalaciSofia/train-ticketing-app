@@ -1,10 +1,10 @@
 package com.BalaciKlaraSofia.train_ticketing.controller;
 
+import com.BalaciKlaraSofia.train_ticketing.domain.User;
 import com.BalaciKlaraSofia.train_ticketing.dto.LoginRequest;
 import com.BalaciKlaraSofia.train_ticketing.dto.LoginResponse;
 import com.BalaciKlaraSofia.train_ticketing.dto.RegisterRequest;
 import com.BalaciKlaraSofia.train_ticketing.service.UserService;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +20,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        return userService.login(request)
-                .map(user -> ResponseEntity.ok(new LoginResponse(user.getId(), user.getUsername(), user.getRole().name())))
-                .orElse(ResponseEntity.status(401).build());
+        User user = userService.login(request);
+        return ResponseEntity.ok(new LoginResponse(user.getId(), user.getUsername(), user.getRole().name()));
     }
 
     @PostMapping("/register")
@@ -32,11 +31,7 @@ public class AuthController {
                 || request.getPassword() == null || request.getPassword().isBlank()) {
             return ResponseEntity.badRequest().body("All fields are required.");
         }
-        try {
-            userService.register(request);
-            return ResponseEntity.status(201).body("Account created.");
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.status(409).body("Username or email is already in use.");
-        }
+        userService.register(request);
+        return ResponseEntity.status(201).body("Account created.");
     }
 }

@@ -31,15 +31,8 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<?> book(@RequestBody BookingRequest request) {
-        try {
-            Booking booking = bookingService.book(request);
-            return ResponseEntity.ok(booking);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(409).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Booking> book(@RequestBody BookingRequest request) {
+        return ResponseEntity.ok(bookingService.book(request));
     }
 
     @PutMapping("/{id}")

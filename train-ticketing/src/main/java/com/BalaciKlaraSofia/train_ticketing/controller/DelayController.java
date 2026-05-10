@@ -31,12 +31,8 @@ public class DelayController {
     }
 
     @PostMapping
-    public ResponseEntity<?> report(@RequestBody DelayRequest request) {
-        try {
-            return ResponseEntity.ok(delayService.report(request));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Delay> report(@RequestBody DelayRequest request) {
+        return ResponseEntity.ok(delayService.report(request));
     }
 
     @PutMapping("/{id}")
