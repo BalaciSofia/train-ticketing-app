@@ -65,11 +65,15 @@ public class DelayServiceImpl implements DelayService {
         int fromStopNumber = fromStop.getRouteStop().getStopNumber();
         List<Ticket> affectedTickets = ticketService.findAffectedByDelay(request.getScheduleId(), fromStopNumber);
         for (Ticket ticket : affectedTickets) {
+            try {
                 emailService.sendDelayNotification(
                         ticket.getBooking().getUser(),
                         ticket,
                         request.getDelayMinutes()
                 );
+            } catch (Exception e) {
+                log.warn("Delay email failed for ticket {}: {}", ticket.getId(), e.getMessage());
+            }
         }
         return delay;
     }

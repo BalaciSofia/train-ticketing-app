@@ -230,38 +230,82 @@ The test suite uses JUnit 5 with Mockito. No Spring context is loaded - all depe
 
 ### Prerequisites
 
-- Java 25
-- PostgreSQL 14 or later
+- Java 25 JDK — [Download from jdk.java.net/25](https://jdk.java.net/25/)
+- Docker Desktop — [Download from docker.com](https://www.docker.com/products/docker-desktop/)
 
-### 1. Create the database
+No Maven installation needed — the Maven wrapper (`mvnw`) handles it automatically.
 
-```sql
-CREATE DATABASE train_db;
+### 1. Start the database
+
+From the root of the repository, start a PostgreSQL container with Docker Compose:
+
+```bash
+docker compose -f deploy/docker-compose.yml up -d
 ```
 
-### 2. Populate the schema and seed data
+This starts PostgreSQL 16 on port `5432` with the `train_db` database already created.
 
-Connect to `train_db` and run:
+### 2. Start the application
 
+Navigate into the project folder and run:
+
+```bash
+cd train-ticketing
+./mvnw spring-boot:run
+```
+
+Wait until you see `Started TrainTicketingApplication` in the logs. Hibernate creates all tables automatically on first boot.
+
+### 3. Seed the database
+
+Once the app has started and created the schema, stop it (`Ctrl+C`) and run the seed script to populate stations, routes, trains, and demo users.
+
+On Linux / macOS:
 ```bash
 psql -U postgres -d train_db -f plan/seed.sql
 ```
 
-Spring Boot's `ddl-auto=update` creates the tables on first startup, but running `seed.sql` after the first boot ensures sequences and demo data are in place.
+On Windows PowerShell (no psql installation needed):
+```powershell
+Get-Content plan\seed.sql | docker exec -i train_ticketing_db psql -U postgres -d train_db
+```
 
-### 3. Run
+### 4. Start the application again
 
 ```bash
+cd train-ticketing
 ./mvnw spring-boot:run
 ```
 
-The application starts on port 8080. The Swagger UI is at `http://localhost:8080/swagger-ui.html`.
+The application is now running at `http://localhost:8080`.
 
-### Default credentials (from seed data)
+### 5. Open the UI
+
+| Page | URL |
+|---|---|
+| Login | http://localhost:8080/login.html |
+| Register | http://localhost:8080/register.html |
+| User dashboard | http://localhost:8080/user.html |
+| Admin panel | http://localhost:8080/admin.html |
+| Swagger UI | http://localhost:8080/swagger-ui.html |
+
+### Default credentials
 
 | Username | Password | Role |
 |---|---|---|
 | admin | password123 | ADMIN |
 | sofia.balaci | password123 | CLIENT |
 | cristian.alexutan | password123 | CLIENT |
+
+### Stopping the database
+
+```bash
+docker compose -f deploy/docker-compose.yml down
+```
+
+Data is persisted in a Docker volume and survives restarts. To wipe everything and start fresh:
+
+```bash
+docker compose -f deploy/docker-compose.yml down -v
+```
 

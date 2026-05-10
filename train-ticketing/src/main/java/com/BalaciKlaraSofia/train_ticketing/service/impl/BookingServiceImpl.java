@@ -93,7 +93,11 @@ public class BookingServiceImpl implements BookingService {
             tickets.add(ticketService.add(new Ticket(booking, pair[0], pair[1])));
         }
 
-        emailService.sendBookingConfirmation(user, tickets);
+        try {
+            emailService.sendBookingConfirmation(user, tickets);
+        } catch (Exception e) {
+            log.warn("Confirmation email failed for booking {}: {}", booking.getId(), e.getMessage());
+        }
         return booking;
     }
 
