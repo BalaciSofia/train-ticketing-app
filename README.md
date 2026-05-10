@@ -1,6 +1,6 @@
 # Train Ticketing Application
 
-A Spring Boot REST application for managing train schedules, bookings, and delay notifications. Supports two roles: clent (search routes, book tickets) and admin (manage the full catalogue, report delays).
+A Spring Boot REST application for managing train schedules, bookings, and delay notifications. Supports two roles: client (search routes, book tickets) and admin (manage the full catalogue, report delays).
 
 ## Setup Guide
 
