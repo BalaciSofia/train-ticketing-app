@@ -1,7 +1,98 @@
 # Train Ticketing Application
 
-A Spring Boot REST application for managing train schedules, bookings, and delay notifications. Supports two roles: **CLIENT** (search routes, book tickets) and **ADMIN** (manage the full catalogue, report delays).
+A Spring Boot REST application for managing train schedules, bookings, and delay notifications. Supports two roles: clent (search routes, book tickets) and admin (manage the full catalogue, report delays).
 
+## Setup Guide
+
+### Prerequisites
+
+- Java 25 JDK — [Download from jdk.java.net/25](https://jdk.java.net/25/)
+- Docker Desktop — [Download from docker.com](https://www.docker.com/products/docker-desktop/)
+
+No Maven installation needed — the Maven wrapper (`mvnw`) handles it automatically.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/BalaciSofia/train-ticketing-app.git
+cd train-ticketing-app
+```
+
+### 2. Start the database
+
+From the root of the repository, start a PostgreSQL container with Docker Compose:
+
+```bash
+docker compose -f deploy/docker-compose.yml up -d
+```
+
+This starts PostgreSQL 16 on port `5432` with the `train_db` database already created.
+
+### 3. Start the application
+
+Navigate into the project folder and run:
+
+```bash
+cd train-ticketing
+./mvnw spring-boot:run
+```
+
+Wait until you see `Started TrainTicketingApplication` in the logs. Hibernate creates all tables automatically on first boot.
+
+### 4. Seed the database
+
+Once the app has started and created the schema, stop it (`Ctrl+C`), go back to the root directory and run the seed script to populate stations, routes, trains, and demo users.
+
+On Linux / macOS:
+
+```bash
+psql -U postgres -d train_db -f plan/seed.sql
+```
+
+On Windows PowerShell (no psql installation needed):
+
+```powershell
+Get-Content plan\seed.sql | docker exec -i train_ticketing_db psql -U postgres -d train_db
+```
+
+### 5. Start the application again
+
+```bash
+cd train-ticketing
+./mvnw spring-boot:run
+```
+
+The application is now running at `http://localhost:8080`.
+
+### 6. Open the UI
+
+| Page | URL |
+|---|---|
+| Login | http://localhost:8080/login.html |
+| Register | http://localhost:8080/register.html |
+| User dashboard | http://localhost:8080/user.html |
+| Admin panel | http://localhost:8080/admin.html |
+| Swagger UI | http://localhost:8080/swagger-ui.html |
+
+### Default credentials
+
+| Username | Password | Role |
+|---|---|---|
+| admin | password123 | ADMIN |
+| sofia.balaci | password123 | CLIENT |
+| cristian.alexutan | password123 | CLIENT |
+
+### 7. Stopping the database
+
+```bash
+docker compose -f deploy/docker-compose.yml down
+```
+
+Data is persisted in a Docker volume and survives restarts. To wipe everything and start fresh:
+
+```bash
+docker compose -f deploy/docker-compose.yml down -v
+```
 
 ## Technology Stack
 
@@ -15,16 +106,16 @@ A Spring Boot REST application for managing train schedules, bookings, and delay
 
 ## Database Schema
 
-The full schema, seed data, and sequence resets are in [`plan/seed.sql`](plan/seed.sql). Running that script against a fresh PostgreSQL database gives a working dataset for development and testing.
+The full schema and seed data are in the plan directory. Running that script against a fresh PostgreSQL database gives a working dataset for development and testing.
 
 The domain consists of ten tables:
 
 - **stations** - physical stops; each has a city name
 - **routes** - named sequences of stations (e.g. Bucuresti - Brasov)
 - **route_stops** - junction between a route and a station, with a `stop_number` defining the travel order
-- **trains** - physical assets with a seat capacity and a service number (e.g. IR 1581)
+- **trains** - physical assets with a seat capacity and a number (e.g. IR 1581)
 - **schedules** - bind a train to a route for a specific run
-- **schedule_stops** - the timetable entry for one stop within a schedule, storing both arrival and departure timestamps independently to model dwell time
+- **schedule_stops** - the timetable entry for one stop within a schedule, storing both arrival and departure timestamps independently 
 - **users** - application accounts; passwords stored exclusively as BCrypt hashes
 - **bookings** - groups one or more tickets under one transaction for a single user
 - **tickets** - one seat on one schedule between two `schedule_stops` (departure and arrival)
@@ -52,7 +143,7 @@ Returns `200` with `{ "id", "username", "role" }` on success, `401` on bad crede
 ```
 
 Returns `201` on success. Returns `409` if the username or email is already taken. New accounts are always created with the `CLIENT` role; admin accounts must be inserted directly in the database.
-This is not a realistic setup, it s present to showcase the different roles and the register specifically is for other users to try out the app and get the email.
+This is not a realistic setup, it s present to showcase the different roles. The register functionality specifically is for other users to try out the app and recive the appropriate emails(delay+booking).
 
 
 ### Route Search
@@ -102,23 +193,15 @@ Returns all connections between the two stations across every schedule, split in
 }
 ```
 
-If no connection exists the response contains empty arrays - never an error status.
+If no connection exists the response contains empty arrays.
 
-**Algorithm - two passes:**
+**Algorithm**
 
 1. **Direct routes.** Load all `schedule_stops` at the departure station and all at the arrival station. Group both sets by `schedule_id`. For every schedule present in both groups, check that the departure `stop_number` is lower than the arrival `stop_number` (ensuring the correct direction of travel). Each match becomes a `DirectRoute`.
 
 2. **Changeover routes.** For each departure-station stop that did not produce a direct route, fetch all later stops on the same schedule (`findLaterStopsOnSchedule`). Each later stop is a candidate changeover station. For each candidate, find all `schedule_stops` at that station belonging to a *different* schedule. If any of those stops belongs to a schedule that also serves the final destination (with correct stop ordering), and the connecting departure is strictly after the changeover arrival, the two legs form a `ChangeoverRoute`.
 
-**Possible improvement - multiple changeovers**
-
-The current implementation supports at most one changeover. To support N changeovers the natural extension is a graph search:
-
-- Model the network as a directed graph where nodes are `(station, schedule_stop)` pairs and edges represent either boarding a train (same schedule, increasing stop number, departure after arrival) or transferring between trains (same station, different schedule, sufficient connection time).
-- Run a BFS or Dijkstra expansion from all `schedule_stops` at the departure station. Depth 0 gives direct routes, depth 1 gives one changeover, and so on. A maximum-depth cutoff (e.g. 3 changeovers) and a maximum total-journey-time cutoff keep the result set manageable.
-- A priority queue keyed on estimated arrival time at the destination (Dijkstra-style) naturally surfaces the fastest journeys first.
-
-This approach requires no schema changes - the existing `schedule_stops` table already contains all the information needed. Caching all `schedule_stops` in memory at startup as maps keyed by station and by schedule would make each BFS expansion nearly free in terms of database queries.
+The current implementation supports at most one changeover. To support N changeovers the natural extension is a graph search.
 
 ### Booking
 
@@ -136,20 +219,11 @@ This approach requires no schema changes - the existing `schedule_stops` table a
 
 The `tickets` array carries one entry per leg. A single-train journey has one entry; a changeover journey has two. The `departureScheduleStopId` and `arrivalScheduleStopId` values come directly from the route search response.
 
-**Overbooking prevention.** Before creating anything, the service counts seats already committed on each requested segment:
+**Overbooking prevention.** Before creating anything, the service counts seats already committed on each requested segment. Two tickets overlap on a segment when their stop-number intervals intersect. If the count equals or exceeds the train's seat capacity the booking is rejected with `409` and nothing is written to the database.
 
-```sql
-SELECT COUNT(t) FROM Ticket t
-WHERE  t.departureScheduleStop.schedule.id = :scheduleId
-AND    t.departureScheduleStop.routeStop.stopNumber < :arrivalStopNumber
-AND    t.arrivalScheduleStop.routeStop.stopNumber   > :departureStopNumber
-```
+The booking method is annotated `@Transactional`. Capacity is validated for every ticket before the booking record or any ticket record is saved. If the second ticket in a two-ticket booking is sold out, neither the booking nor the first ticket is persisted.
 
-Two tickets overlap on a segment when their stop-number intervals intersect: `[D1, A1)` overlaps `[D2, A2)` when `D1 < A2` and `D2 < A1`. If the count equals or exceeds the train's seat capacity the booking is rejected with `409` and nothing is written to the database.
-
-**All-or-nothing transaction.** The booking method is annotated `@Transactional`. Capacity is validated for every ticket before the booking record or any ticket record is saved. If the second ticket in a two-ticket booking is sold out, neither the booking nor the first ticket is persisted.
-
-**Confirmation email.** After all tickets are saved a single email is sent to the user listing every ticket:
+After all tickets are saved a single email is sent to the user listing every ticket:
 
 ```
 Hello sofia.balaci,
@@ -194,18 +268,11 @@ All endpoints follow standard REST conventions. The complete interactive referen
 }
 ```
 The delay is considered to occur before arriving at the stop @fromScheduleStopId.
-The service finds all passengers affected by the delay - those whose ticket on that schedule arrives beyond the delayed stop:
-
-```sql
-SELECT t FROM Ticket t
-WHERE  t.departureScheduleStop.schedule.id = :scheduleId
-AND    t.arrivalScheduleStop.routeStop.stopNumber > :fromStopNumber
-```
-
+The service finds all passengers affected by the delay - those whose ticket on that schedule arrives beyond the delayed stop.
 Each affected user receives an individual email:
 
 ```
-Hello cristian.alexutan,
+Hello balaci.sofia,
 
 We regret to inform you that your train has been delayed by 20 minutes.
 
@@ -219,93 +286,5 @@ We apologise for the inconvenience.
 
 ## Tests
 
-The test suite uses JUnit 5 with Mockito. No Spring context is loaded - all dependencies are mocked. Three service classes with non-trivial business logic are covered:
-
-- **RouteSearchServiceTest** - direct route found; wrong direction rejected; no shared schedule; valid changeover; changeover rejected when the connecting departure is before the changeover arrival
-- **BookingServiceImplTest** - successful booking; train full; last seat taken; multiple tickets with one confirmation email; second ticket sold out rolls back the entire transaction
-- **DelayServiceImplTest** - delay saved and all affected passengers notified; delay saved with no passengers to notify
-
-
-## Setup Guide
-
-### Prerequisites
-
-- Java 25 JDK — [Download from jdk.java.net/25](https://jdk.java.net/25/)
-- Docker Desktop — [Download from docker.com](https://www.docker.com/products/docker-desktop/)
-
-No Maven installation needed — the Maven wrapper (`mvnw`) handles it automatically.
-
-### 1. Start the database
-
-From the root of the repository, start a PostgreSQL container with Docker Compose:
-
-```bash
-docker compose -f deploy/docker-compose.yml up -d
-```
-
-This starts PostgreSQL 16 on port `5432` with the `train_db` database already created.
-
-### 2. Start the application
-
-Navigate into the project folder and run:
-
-```bash
-cd train-ticketing
-./mvnw spring-boot:run
-```
-
-Wait until you see `Started TrainTicketingApplication` in the logs. Hibernate creates all tables automatically on first boot.
-
-### 3. Seed the database
-
-Once the app has started and created the schema, stop it (`Ctrl+C`) and run the seed script to populate stations, routes, trains, and demo users.
-
-On Linux / macOS:
-```bash
-psql -U postgres -d train_db -f plan/seed.sql
-```
-
-On Windows PowerShell (no psql installation needed):
-```powershell
-Get-Content plan\seed.sql | docker exec -i train_ticketing_db psql -U postgres -d train_db
-```
-
-### 4. Start the application again
-
-```bash
-cd train-ticketing
-./mvnw spring-boot:run
-```
-
-The application is now running at `http://localhost:8080`.
-
-### 5. Open the UI
-
-| Page | URL |
-|---|---|
-| Login | http://localhost:8080/login.html |
-| Register | http://localhost:8080/register.html |
-| User dashboard | http://localhost:8080/user.html |
-| Admin panel | http://localhost:8080/admin.html |
-| Swagger UI | http://localhost:8080/swagger-ui.html |
-
-### Default credentials
-
-| Username | Password | Role |
-|---|---|---|
-| admin | password123 | ADMIN |
-| sofia.balaci | password123 | CLIENT |
-| cristian.alexutan | password123 | CLIENT |
-
-### Stopping the database
-
-```bash
-docker compose -f deploy/docker-compose.yml down
-```
-
-Data is persisted in a Docker volume and survives restarts. To wipe everything and start fresh:
-
-```bash
-docker compose -f deploy/docker-compose.yml down -v
-```
+The test suite uses JUnit 5 with Mockito. No Spring context is loaded - all dependencies are mocked. Three service classes with non-trivial business logic are covered: RouteSearchServiceTest, BookingServiceImplTest, DelayServiceImplTest
 
