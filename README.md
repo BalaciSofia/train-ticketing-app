@@ -39,6 +39,17 @@ cd train-ticketing
 
 Wait until you see `Started TrainTicketingApplication` in the logs. Hibernate creates all tables automatically on first boot.
 
+#### Email notifications (optional)
+
+Booking confirmations and delay notifications are sent by email through Gmail SMTP. The credentials are not stored in the repository; set them as environment variables before starting the app (use a Gmail address with an [app password](https://support.google.com/accounts/answer/185833)):
+
+```bash
+export MAIL_USERNAME=your-address@gmail.com
+export MAIL_PASSWORD=your-app-password
+```
+
+On Windows PowerShell use `$env:MAIL_USERNAME="..."` and `$env:MAIL_PASSWORD="..."`. Without them the app runs normally and simply skips sending emails.
+
 ### 4. Seed the database
 
 Once the app has started and created the schema, stop it (`Ctrl+C`), go back to the root directory and run the seed script to populate stations, routes, trains, and demo users.
